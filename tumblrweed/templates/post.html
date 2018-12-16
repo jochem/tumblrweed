@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>#{{ post.id }} {{ post.slug }}</h3>
+<h4>{{ post.type }} @ {{ post.date }}</h4>
+<p>{{ post.width }}x{{ post.height }}
+{{ post.format }}
+{{ post.state }}</p>
+{% if post.type == 'photo' %}
+    {% for photo in post.get_photos %}
+        <img src="/static/{{ photo.file }}" maxwidth="100%">
+    {% endfor %}
+{% elif post.type == 'video' %}
+    <video height="100%" controls loop>
+      <source src="/static/{{ post.id }}.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+{% endif %}
+
+<hr>
+<p>HTML source</p>
+<iframe srcdoc='{{ post.html|safe }}'></iframe>
+
+{% endblock %}

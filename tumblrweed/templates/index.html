@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% macro render_pagination(pagination, endpoint) %}
+  <div class=pagination>
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a>
+      {% else %}
+        <strong>{{ page }}</strong>
+      {% endif %}
+    {% else %}
+      <span class=ellipsis>…</span>
+    {% endif %}
+  {%- endfor %}
+  </div>
+{% endmacro %}
+
+{% block content %}
+{{ render_pagination(posts, request.endpoint) }}
+
+{% for post in posts.items %}
+    <a href="/post/{{ post.id }}/">
+        {% if post.type == 'photo' %}
+            {% for photo in post.get_photos %}
+                <img src="/static/{{ photo.file }}" width="500">
+            {% endfor %}
+        {% elif post.type == 'video' %}
+        <video height="300" controls>
+          <source src="/static/{{ post.id }}.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        {% endif %}
+    </a>
+{% endfor %}
+{% endblock %}
